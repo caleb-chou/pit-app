@@ -1,4 +1,4 @@
-import os, sv, json, cgi
+import os, json, cgi
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 host_name = 'localhost'
@@ -27,15 +27,15 @@ class serverproto(BaseHTTPRequestHandler):
         </html>
         '''
         self.do_HEAD()
-        self.wfile.write(json.dumps({'hello':'world', 'recieved':'ok'}))
+        self.wfile.write(json.dumps({'hello': 'world', 'received': 'ok'}).encode('utf-8'))
     def do_POST(self):
         ctype, pdict = cgi.parse_header(self.headers['Content-type'])
         if(ctype != 'application/json'):
             self.send_response(400)
             self.end_headers()
             return
-        content_length = int(self.headers['Content-Length'])
-        message = json.loads(self.rfile.read(content_length))
+        content_length = int(self.headers['Content-length'])
+        message = json.loads(self.rfile.read(content_length).decode('utf-8'))
         message['recieved'] = 'ok'
 
         self.do_HEAD()
